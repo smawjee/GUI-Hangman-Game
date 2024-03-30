@@ -1,54 +1,100 @@
 package hangman;
 
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class WordPanel extends JPanel {
-	
-	
-	private JLabel wordLabel;
-
-	public WordPanel(String Word)
-	{
-		setLayout(new FlowLayout());
-		JLabel	wordLabel = new JLabel();
-		initializeWordLabel(Word);
-		add(wordLabel);
-		
-		
-	}
-
-	private void initializeWordLabel(String Word) {
-		String wordDisplay = "";
-		for(int i = 0; i< Word.length();i++)
+	public class WordPanel extends JPanel {
+		private JLabel[] wordLabel;
+		private String currentWord;
+		private List<String> wordList;
+		public WordPanel()
 		{
-			wordDisplay += "_";
+			setLayout(new FlowLayout());
+			wordList = readTextFile("WordList.txt");
+			currentWord = getRandomWord();
+			
+			initializeLabels(currentWord.length());
+			updateDisplay();
+
+			 
+			
 		}
-		wordLabel.setText(wordDisplay);
+		private String getRandomWord() {
+			Random random = new Random();
+			return wordList.get(random.nextInt(wordList.size()));
+		}
 		
-	}
-	
-	public boolean guess(String letter)
-	{
-		boolean guessCorrect = false;
-		String currentWordDisplay = wordLabel.getText();
-		String updatedWordDisplay = "";
-		String wordToGuess = null;
-		for(int i =0; i < wordToGuess.length(); i++)
-		{
-			if (wordToGuess.charAt(i) == letter.toUpperCase().charAt(0))
+			
+		
+		
+		
+		private List<String> readTextFile(String fileName) {
+			List<String> wordList = new ArrayList<>();
+			try (BufferedReader Reader = new BufferedReader(new FileReader(fileName)))
 			{
-				updatedWordDisplay += letter.toUpperCase().charAt(0);
-				guessCorrect = true;
-				
+				String Line;
+				while((Line = Reader.readLine()) != null)
+				{
+					wordList.add(Line);
+				}
+			} catch (IOException e) {
+			e.printStackTrace();
 			}
-			updatedWordDisplay += currentWordDisplay.charAt(i*2);
-			updatedWordDisplay += "";
+			return wordList;
 		}
-		wordLabel.setText(updatedWordDisplay);
-		return guessCorrect;
+		
+		
+		
+		private void initializeLabels(int length) {
+	        wordLabel = new JLabel[length];
+	        Font labelFont = new Font("Arial",Font.PLAIN, 42);
+	        for (int i = 0; i < length; i++) {
+	            wordLabel[i] = new JLabel("_");
+	            wordLabel[i].setFont(labelFont);
+	            add(wordLabel[i]);
+	        }
+	    }
+
+	    public boolean guess(String letter) {
+	        boolean correct = false;
+	        for (int i = 0; i < currentWord.length(); i++) {
+	            if (currentWord.substring(i, i + 1).equalsIgnoreCase(letter)) {
+	                wordLabel[i].setText(letter);
+	                setOpaque(true);
+	                correct = true;
+	            }
+	        }
+	        return correct;
+	    }
+
+	    public boolean isWordGuessed() {
+	        for (JLabel label : wordLabel) {
+	            if (label.getText().equals("_")) {
+	                return false;
+	            }
+	        }
+	        return true;
+	    }
+
+	    private void updateDisplay() {
+	        for (int i = 0; i < currentWord.length(); i++) {
+	            
+				wordLabel[i].setText("_");
+	        }
+	    }
 	}
 
-}
+		
+		
+
+			
