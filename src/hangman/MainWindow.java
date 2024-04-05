@@ -15,92 +15,58 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class MainWindow extends JFrame implements WindowListener {
+public class MainWindow extends JFrame {
 	
 	private HealthPanel healthPanel;
-	private WordPanel wordPanel;
+	private static WordPanel wordPanel;
 	private ArrayList<String> wordList;
 	private String currentWord;
-	Container cpane;
+	private ButtonPanel buttonPanel;
+	static Container cpane;
 
+	public static Container getCpane() {
+		return cpane;
+	}
 
-
-	
-	
-	
 	public MainWindow()
 	{	
 		cpane = this.getContentPane();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(800,600);
+		setSize(800,700);
 		setTitle("Hangman Game");
-		cpane.setLayout(new GridLayout(2,1));
+		cpane.setLayout(new GridLayout(3,1));
 		
 		
-		
-		 healthPanel = new HealthPanel();
+		healthPanel = new HealthPanel();
 		cpane.add(healthPanel,BorderLayout.NORTH);
 		setVisible(true);
 
 		wordPanel = new WordPanel();
-		cpane.add(wordPanel,BorderLayout.SOUTH);
+		cpane.add(wordPanel,BorderLayout.CENTER);
 		
 		setVisible(true);
 		
-		
-	
+		buttonPanel = new ButtonPanel(wordPanel);
+		cpane.add(buttonPanel,BorderLayout.SOUTH);
+		setVisible(true);
 
-		
-		
-		
 		}
+	public static void ResetGamePanel()
+	{
+		cpane.removeAll();
+		WordPanel.setCurrentWord(WordPanel.getCurrentWord());
+		cpane.add(new HealthPanel());
+		cpane.add(new WordPanel());
+		cpane.add(new ButtonPanel(wordPanel));
+		cpane.revalidate();
+		cpane.repaint();
+		
+	}
+	
+}
 	
 	
 	
 		
 				
-		@Override
-	public void windowOpened(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowClosing(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowClosed(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowIconified(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowActivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-
-}
